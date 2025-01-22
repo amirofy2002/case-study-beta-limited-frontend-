@@ -4,7 +4,6 @@ import { useState } from "react";
 
 export default function Home() {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const [file, setFile] = useState<any>(null);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [transactions, setTransactions] = useState<any[]>([]);
 
@@ -13,7 +12,6 @@ export default function Home() {
     input.type = "file";
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     input.onchange = (event: any) => {
-      setFile(event.target.files[0]);
       const file = event.target.files[0];
       const formData = new FormData();
       formData.append("file", file);
