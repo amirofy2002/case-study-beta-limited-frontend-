@@ -16,6 +16,7 @@ export default function Home() {
   const [activeTab, setActiveTab] = useState<"merchantAnalysis" | "patterns">(
     "merchantAnalysis"
   );
+  const [loading, setLoading] = useState(false);
 
   const handleUpload = () => {
     const input = document.createElement("input");
@@ -25,7 +26,8 @@ export default function Home() {
       const file = event.target.files[0];
       const formData = new FormData();
       formData.append("file", file);
-      console.log({ url: process.env.BASE_URL });
+      setLoading(true);
+
       const url = `${process.env.BASE_URL}/api/upload`;
       fetch(url, {
         method: "POST",
@@ -53,7 +55,8 @@ export default function Home() {
           console.log({ merchants });
           setMerchanCounts(Object.keys(merchants).length);
         })
-        .catch((error) => console.error(error));
+        .catch((error) => console.error(error))
+        .finally(() => setLoading(false));
     };
     input.click();
   };
@@ -69,12 +72,16 @@ export default function Home() {
         <h1 className="text-2xl font-bold text-gray-800">
           Transaction Analyzer
         </h1>
-        <button
-          className="bg-blue-600 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-700"
-          onClick={handleUpload}
-        >
-          Upload CSV
-        </button>
+        {loading ? (
+          <span className="text-blue-400"> loading.... </span>
+        ) : (
+          <button
+            className="bg-blue-600 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-700"
+            onClick={handleUpload}
+          >
+            Upload CSV
+          </button>
+        )}
       </header>
 
       {/* Overview Section */}
@@ -94,7 +101,10 @@ export default function Home() {
         <div className="bg-white p-6 rounded-lg shadow">
           <p className="text-gray-500">Avg. Transaction</p>
           <p className="text-2xl font-bold  text-gray-800">
-            ${(total / transactions.length).toFixed(2)}
+            $
+            {transactions.length > 0
+              ? (total / transactions.length).toFixed(2)
+              : 0}
           </p>
         </div>
         <div className="bg-white p-6 rounded-lg shadow">
